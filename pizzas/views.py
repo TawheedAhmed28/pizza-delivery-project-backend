@@ -6,6 +6,7 @@ from rest_framework.exceptions import NotFound
 
 from .models import Pizza, Topping
 from .serializers.common import PizzaSerializer
+from .serializers.populated import PopulatedPizzaSerializer
 
 # Create your views here.
 
@@ -44,7 +45,7 @@ class PizzaDetailView(APIView):
     def get(self, _request, pk):
 
             pizza = self.get_pizza(pk=pk)
-            serialized_pizza = PizzaSerializer(pizza)
+            serialized_pizza = PopulatedPizzaSerializer(pizza)
             return Response(serialized_pizza.data, status=status.HTTP_200_OK)
     
     def put(self, request, pk):
