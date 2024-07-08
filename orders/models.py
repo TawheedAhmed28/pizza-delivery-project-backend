@@ -15,3 +15,8 @@ class Order(models.Model):
     pizzas = models.ManyToManyField(Pizza, related_name="orders")
     notes = models.TextField(max_length=500, null=True)
     time_added = models.DateTimeField(auto_now_add=True)
+    owner = models.ForeignKey(
+        "jwt_auth.User",
+        related_name="owners",
+        on_delete=models.CASCADE
+    )

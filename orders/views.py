@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticated
 
 from .models import Order
 from .serializers.common import OrderSerializer
@@ -12,6 +13,8 @@ from .serializers.populated import PopulatedOrderSerializer
 
 class OrderListView(APIView):
 
+    permission_classes = (IsAuthenticated,)
+
     def get(self, _request):
         
         orders = Order.objects.all()
@@ -20,6 +23,7 @@ class OrderListView(APIView):
     
     def post(self, request):
 
+        request.data["owner"] = request.user.id
         order_to_add = OrderSerializer(data=request.data)
 
         if order_to_add.is_valid():
@@ -31,6 +35,8 @@ class OrderListView(APIView):
     
 
 class OrderDetailView(APIView):
+
+    permission_classes = (IsAuthenticated,)
 
     def get_order(self, pk): 
 
@@ -51,6 +57,10 @@ class OrderDetailView(APIView):
     def put(self, request, pk):
         
         order_to_edit = self.get_order(pk=pk)
+
+        if order_to_edit.owner != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         updated_order = OrderSerializer(order_to_edit, data=request.data)
 
         if updated_order.is_valid():
@@ -60,8 +70,12 @@ class OrderDetailView(APIView):
         
         return Response(updated_order.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     
-    def delete(self, _request, pk):
+    def delete(self, request, pk):
 
         order_to_delete = self.get_order(pk=pk)
+
+        if order_to_delete.owner != request.user:
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
         order_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

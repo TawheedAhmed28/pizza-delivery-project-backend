@@ -3,14 +3,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import NotFound
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .models import Pizza, Topping
+from .models import Pizza
 from .serializers.common import PizzaSerializer
 from .serializers.populated import PopulatedPizzaSerializer
 
 # Create your views here.
 
 class PizzaListView(APIView):
+
+    permission_classes = (IsAuthenticatedOrReadOnly, )
 
     def get(self, _request):
         
@@ -19,7 +22,8 @@ class PizzaListView(APIView):
         return Response(serialized_pizzas.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-
+        
+        request.data["owner"] = request.user.id
         pizza_to_add = PizzaSerializer(data=request.data)
 
         if pizza_to_add.is_valid():
@@ -31,6 +35,8 @@ class PizzaListView(APIView):
     
 
 class PizzaDetailView(APIView):
+
+    permission_classes = (IsAuthenticatedOrReadOnly,)
 
     def get_pizza(self, pk): 
 
@@ -51,6 +57,13 @@ class PizzaDetailView(APIView):
     def put(self, request, pk):
         
         pizza_to_edit = self.get_pizza(pk=pk)
+
+        if pizza_to_edit.owner.id != request.user.id and not (request.user.is_staff or request.user.is_superuser):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+        first_owner = pizza_to_edit.owner.id
+        request.data["owner"] = first_owner
+
         updated_pizza = PizzaSerializer(pizza_to_edit, data=request.data)
 
         if updated_pizza.is_valid():
@@ -60,8 +73,11 @@ class PizzaDetailView(APIView):
         
         return Response(updated_pizza.errors, status=status.HTTP_422_UNPROCESSABLE_ENTITY)
     
-    def delete(self, _request, pk):
+    def delete(self, request, pk):
 
+        if not (request.user.is_staff or request.user.is_superuser):
+            return Response(status=status.HTTP_401_UNAUTHORIZED)
+       
         pizza_to_delete = self.get_pizza(pk=pk)
         pizza_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)

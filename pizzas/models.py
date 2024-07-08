@@ -18,5 +18,10 @@ class Pizza(models.Model):
     toppings = models.ManyToManyField(Topping, related_name="pizzas")
     is_vegetarian = models.BooleanField()
     is_vegan = models.BooleanField()
+    owner = models.ForeignKey(
+        "jwt_auth.User",
+        related_name="pizzas",
+        on_delete= models.CASCADE
+    )
 
 
