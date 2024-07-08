@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'pizzas',
     'orders',
+    'corsheaders',
 ]
 
 AUTH_USER_MODEL = 'jwt_auth.User'
@@ -53,7 +54,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
+    "django.middleware.common.CommonMiddleware",
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 ROOT_URLCONF = 'project.urls'
 
