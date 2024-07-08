@@ -1,0 +1,14 @@
+[
+{
+  "model": "orders.order",
+  "pk": 1,
+  "fields": {
+    "notes": "i like pineapple",
+    "time_added": "2024-07-07T12:11:01.176Z",
+    "pizzas": [
+      2,
+      4
+    ]
+  }
+}
+]

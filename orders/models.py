@@ -6,6 +6,11 @@ from pizzas.models import Pizza
 class Order(models.Model):
 
     # need help with def __str__() here
+    # Pizza: [toppings], Pizza: [toppings]
+
+    def __str__(self) -> str:
+
+        return f'Order ID  {self.id}'
 
     pizzas = models.ManyToManyField(Pizza, related_name="orders")
     notes = models.TextField(max_length=500, null=True)
