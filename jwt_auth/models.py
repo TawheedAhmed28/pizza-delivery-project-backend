@@ -9,7 +9,7 @@ class User(AbstractUser):
     email = models.CharField(max_length=50, unique=True, validators=[
             RegexValidator(
                 regex=r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$',
-                message="Enter a valid email",
+                message="Enter a valid email. (must contain '@' and '.')",
                 code="invalid_registration",
             )
         ])
