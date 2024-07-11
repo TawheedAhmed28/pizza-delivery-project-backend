@@ -35,10 +35,10 @@ class SignInView(APIView):
             user_to_login = User.objects.get(email=email)
 
         except User.DoesNotExist:
-            raise PermissionDenied(detail='Invalid email or password')
+            raise PermissionDenied(detail='Invalid email or password. :(')
         
         if not user_to_login.check_password(password):
-            raise PermissionDenied(detail='Invalid email or password')
+            raise PermissionDenied(detail='Invalid email or password. :(')
         
 
         dt = datetime.now() + timedelta(days=7)
