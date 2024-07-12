@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 from .models import Pizza, Topping
@@ -23,6 +23,17 @@ class PizzaListView(APIView):
     
     def post(self, request):
         
+        print(request.data)
+
+        pizzas = Pizza.objects.all()
+
+        for pizza in pizzas:
+           
+            pizza_toppings = list(pizza.toppings.values_list('id', flat=True))
+            if set(pizza_toppings) == set(request.data["toppings"]):
+
+                raise ValidationError({"toppings": ["A pizza with these toppings already exists!"]})
+
         request.data["owner"] = request.user.id
         pizza_to_add = PizzaSerializer(data=request.data)
 
@@ -57,6 +68,15 @@ class PizzaDetailView(APIView):
     def put(self, request, pk):
         
         pizza_to_edit = self.get_pizza(pk=pk)
+
+        pizzas = Pizza.objects.all()
+
+        for pizza in pizzas:
+           
+            pizza_toppings = list(pizza.toppings.values_list('id', flat=True))
+            if set(pizza_toppings) == set(request.data["toppings"]):
+
+                raise ValidationError({"toppings": ["A pizza with these toppings already exists!"]})
 
         if pizza_to_edit.owner.id != request.user.id and not (request.user.is_staff or request.user.is_superuser):
             return Response(status=status.HTTP_401_UNAUTHORIZED)
