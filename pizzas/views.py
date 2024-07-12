@@ -5,8 +5,8 @@ from rest_framework import status
 from rest_framework.exceptions import NotFound
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
-from .models import Pizza
-from .serializers.common import PizzaSerializer
+from .models import Pizza, Topping
+from .serializers.common import PizzaSerializer, ToppingSerializer
 from .serializers.populated import PopulatedPizzaSerializer
 
 # Create your views here.
@@ -81,3 +81,12 @@ class PizzaDetailView(APIView):
         pizza_to_delete = self.get_pizza(pk=pk)
         pizza_to_delete.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+
+class ToppingListView(APIView):
+
+    def get(self, _request):
+
+        toppings = Topping.objects.all()
+        serialized_toppings = ToppingSerializer(toppings, many=True)
+        return Response(serialized_toppings.data, status=status.HTTP_200_OK)
