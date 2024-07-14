@@ -15,9 +15,9 @@ class OrderListView(APIView):
 
     permission_classes = (IsAuthenticated,)
 
-    def get(self, _request):
+    def get(self, request):
         
-        orders = Order.objects.all()
+        orders = Order.objects.filter(owner=request.user.id)
         serialized_orders = OrderSerializer(orders, many=True)
         return Response(serialized_orders.data, status=status.HTTP_200_OK)
     
