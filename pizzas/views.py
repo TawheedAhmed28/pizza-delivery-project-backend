@@ -69,7 +69,7 @@ class PizzaDetailView(APIView):
         
         pizza_to_edit = self.get_pizza(pk=pk)
 
-        pizzas = Pizza.objects.all()
+        pizzas = Pizza.objects.exclude(pk=pizza_to_edit.id)
 
         for pizza in pizzas:
            
