@@ -13,7 +13,7 @@ class Order(models.Model):
         return f'Order ID  {self.id}'
 
     pizzas = models.ManyToManyField(Pizza, related_name="orders")
-    notes = models.TextField(max_length=500, null=True)
+    notes = models.TextField(max_length=500, null=True, blank=True)
     time_added = models.DateTimeField(auto_now_add=True)
     owner = models.ForeignKey(
         "jwt_auth.User",

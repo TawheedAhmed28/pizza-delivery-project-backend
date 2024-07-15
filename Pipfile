@@ -9,6 +9,9 @@ psycopg2-binary = "*"
 djangorestframework = "*"
 pyjwt = "*"
 django-cors-headers = "*"
+python-dotenv = "*"
+dj-database-url = "*"
+django-on-heroku = "*"
 
 [dev-packages]
 
