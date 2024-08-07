@@ -25,7 +25,7 @@ class JWTAuthentication(BasicAuthentication):
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
 
             user = User.objects.get(pk=payload.get("sub"))
-            print("User => ", user)
+            # print("User => ", user)
 
         except jwt.exceptions.InvalidTokenError:
             raise PermissionDenied(detail="Your authentication token is invalid.")

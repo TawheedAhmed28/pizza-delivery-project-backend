@@ -22,8 +22,6 @@ class PizzaListView(APIView):
         return Response(serialized_pizzas.data, status=status.HTTP_200_OK)
     
     def post(self, request):
-        
-        print(request.data)
 
         pizzas = Pizza.objects.all()
 

@@ -15,7 +15,7 @@ class SignUpView(APIView):
     def post(self, request):
         
         user_to_create = UserSerializer(data=request.data)
-        print ('USER TO CREATE - ', user_to_create)
+        # print ('USER TO CREATE - ', user_to_create)
 
         if user_to_create.is_valid():
             user_to_create.save()

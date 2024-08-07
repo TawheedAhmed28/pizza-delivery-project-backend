@@ -27,7 +27,7 @@ class UserSerializer(serializers.ModelSerializer):
 
         data['password'] = make_password(password)
 
-        print('DATA -> ', data)
+        # print('DATA -> ', data)
         return data
     
     class Meta:
